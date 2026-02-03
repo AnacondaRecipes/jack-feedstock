@@ -1,7 +1,8 @@
+{% set name = "jack" %}
 {% set version = "1.9.22" %}
 
 package:
-  name: jack
+  name: {{ name|lower }}
   version: {{ version }}
 
 source:
@@ -12,33 +13,38 @@ source:
     - waf.patch
 
 build:
-  number: 3
-  skip: true  # [win or osx]
+  number: 0
+  skip: true  # [not linux]
   run_exports:
     - {{ pin_subpackage('jack', max_pin='x.x') }}
 
 requirements:
   build:
-    - {{ compiler('c') }}
     - {{ stdlib('c') }}
+    - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - python >=3.6,<3.11
+    - python
     - pkg-config
   host:
     - alsa-lib
-    - alsa-lib >=1.0.18
-    - libopus
-    - eigen >=3.1.2
-    - portaudio  # [win]
+    - libopus {{ libopus }}
+    - eigen {{ eigen }}
 
 test:
   commands:
+    - test -f $PREFIX/lib/libjack.so
+    - test -f $PREFIX/lib/pkgconfig/jack.pc
+    - test -f $PREFIX/include/jack/jack.h
 
 about:
-  home: http://jackaudio.org/
+  home: http://jackaudio.org
   license: LGPL-2.0-only
+  license_family: LGPL
   license_file: COPYING
   summary: Audio connection kit.
+  summary: Audio connection kit.
+  doc_url: https://github.com/jackaudio/jackaudio.github.com/wiki
+  dev_url: https://github.com/jackaudio/jack2.git
 
 extra:
   recipe-maintainers:
